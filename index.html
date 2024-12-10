@@ -2,40 +2,47 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Weather App</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather App</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body class="bg-gradient-to-r from-blue-500 to-green-500">
+  <video id="clearSkyVideo" class="background-video blur-sm" loop muted>
+    <source src="./assets/videos/clearsky.mp4" type="video/mp4">
+  </video>
+  <video id="scatteredCloudsVideo" class="background-video blur-sm" loop muted>
+    <source src="./assets/videos/scatteredclouds.mp4" type="video/mp4">
+  </video>
+  <div class="textContainer">
     <h1 class="text-4xl font-bold text-center">Weather App</h1>
     <input type="text" id="city" placeholder="Enter city name" />
-    <button id="search">Search</button>
+    <button id="search" onclick="fetchForecast(document.getElementById('city').value)">Search</button>
     <div id="weather"></div>
     <div id="error"></div>
     <div id="loading" style="display: none">Loading...</div>
+  </div>
 
-    <div class="text-center">
-        <button id="settingsToggle" onclick="toggleSettings()">Settings</button>
-        <div id="settingsContainer" class="hidden">
-            <div id="settings">
-                <h2>Settings</h2>
-                <label for="unit">Unit</label>
-                <select id="unit">
-                    <option value="metric">Celsius</option>
-                    <option value="imperial">Fahrenheit</option>
-                </select>
-                <button id="save">Save</button>
-            </div>
-        </div>
+  <button id="settingsButton" onclick="toggleSettings()">
+    <img src="https://www.iconpacks.net/icons/2/free-settings-icon-3110-thumb.png" width="20" height="20" />
+  </button>
+  <div id="settingsContainer" class="hidden">
+    <div id="settings">
+      <h2>Settings</h2>
+      <label for="unit">Unit</label>
+      <select id="unit">
+        <option value="metric">Celsius</option>
+        <option value="imperial">Fahrenheit</option>
+      </select>
     </div>
+  </div>
 
-    <div id="forecast"></div>
-    <div id="history"></div>
+  <div id="forecast"></div>
+  <div id="history"></div>
 
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 
 </html>
