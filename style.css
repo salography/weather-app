@@ -1,0 +1,125 @@
+* {
+    text-align: center;
+}
+
+body{
+    background-color: #ffffff;
+}
+h1 {
+    text-align: center;
+}
+
+#settingsButton {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 20px auto;
+}
+
+#settingsButton.text-center {
+    position: relative;
+    width: 100%;
+    margin: 20px 0;
+}
+
+#settingsContainer {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1000;
+    width: 200px;
+    opacity: 1;
+    transition: all 0.3s ease-in-out;
+    transform-origin: top center;
+}
+
+#settingsContainer.hidden {
+    opacity: 0;
+    transform: translateX(-50%) scaleY(0);
+    pointer-events: none;
+}
+
+#settingsButton button:hover {
+    background-color: #e0e0e0;
+    transition: background-color 0.2s ease;
+}
+
+/* Apply animation to direct children of #settings */
+#settings > * {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#settings {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#settings h2 {
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+#settings label {
+    margin-bottom: 5px;
+}
+
+#settings select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+#settings button#save {
+    padding: 8px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#settings button#save:hover {
+    background-color: #45a049;
+}
+
+input#city {
+    width: 50%;
+    display: block;
+    margin: 20px auto;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1.1px solid #ccc;
+}
+
+button#search {
+    width: 20%;
+    padding: 10px;
+    display: block;
+    margin: auto;
+    margin-bottom: 10px;
+    border-radius: 1px;
+    border: 1.1px solid #ccc;
+}
