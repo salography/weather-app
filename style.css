@@ -8,7 +8,7 @@ body {
 }
 
 h1 {
-    text-align: center;
+    text-align: center; /* Redundant since * sets text-align center */
 }
 
 .textContainer {
@@ -17,6 +17,8 @@ h1 {
     align-items: center;
     justify-content: center;
     margin-top: 25%;
+    position: relative; /* Add position relative for z-index to work */
+    z-index: 1; /* Ensure content appears above background video */
 }
 
 #settingsButton {
@@ -28,6 +30,7 @@ h1 {
     border: 1px solid #ccc;
     border-radius: 4px;
     cursor: pointer;
+    z-index: 1001; /* Ensure button appears above settings container */
 }
 
 #settingsButton.text-center {
@@ -50,7 +53,7 @@ h1 {
     z-index: 1000;
     width: 200px;
     opacity: 1;
-    transition: all 0.3s ease-in-out;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; /* Fix transition property */
     transform-origin: top center;
 }
 
@@ -76,7 +79,6 @@ h1 {
         opacity: 0;
         transform: translateY(-10px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
@@ -113,6 +115,7 @@ h1 {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.2s ease; /* Add transition for hover effect */
 }
 
 #settings button#save:hover {
@@ -136,13 +139,20 @@ button#search {
     margin-bottom: 10px;
     border-radius: 1px;
     border: 1.1px solid #ccc;
+    cursor: pointer; /* Add cursor pointer for better UX */
+    transition: background-color 0.2s ease; /* Add transition for hover effect */
 }
 
+button#search:hover {
+    background-color: #f0f0f0; /* Add hover effect */
+}
 .forecast-grid {
-    display: grid;
+    display: grid; /* Changed from -ms-inline-grid to standard grid */
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     padding: 2rem;
+    position: relative; /* Add position relative for z-index */
+    z-index: 1; /* Ensure forecast appears above background video */
 }
 
 .forecast-item {
@@ -152,6 +162,7 @@ button#search {
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease;
+    backdrop-filter: blur(5px); /* Add backdrop blur for better readability */
 }
 
 .forecast-item:hover {
