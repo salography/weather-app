@@ -184,8 +184,10 @@ function displayForecast(data) {
             // Handle video background effects based on weather description
             const clearSkyVideo = document.getElementById("clearSkyVideo");
             const scatteredCloudsVideo = document.getElementById("scatteredCloudsVideo");
+            const overcastVideo = document.getElementById("overcastVideo");
+            const rainVideo = document.getElementById("rainVideo");
 
-            if (!clearSkyVideo || !scatteredCloudsVideo) {
+            if (!clearSkyVideo || !scatteredCloudsVideo || !overcastVideo) {
                 console.error("Video elements not found");
             } else {
                 if (forecast.description.toLowerCase().includes("clear sky")) {
@@ -196,44 +198,75 @@ function displayForecast(data) {
                         console.log("Mouse enter - clear sky item");
                         clearSkyVideo.classList.remove("video-visible");
                         scatteredCloudsVideo.classList.remove("video-visible");
+                        overcastVideo.classList.remove("video-visible");
+
                         clearSkyVideo.pause();
                         scatteredCloudsVideo.pause();
+                        overcastVideo.pause();
 
                         // Activate clear sky video
                         document.body.classList.add("clear-sky-active");
                         clearSkyVideo.classList.add("video-visible");
+
                         clearSkyVideo.play().catch(e => console.error("Error playing clear sky video:", e));
                     });
 
-                    forecastItem.addEventListener("mouseleave", () => {
-                        console.log("Mouse leave - clear sky item");
-                        document.body.classList.remove("clear-sky-active");
-                        clearSkyVideo.classList.remove("video-visible");
-                        clearSkyVideo.pause();
-                    });
                 } else if (forecast.description.toLowerCase().includes("scattered clouds")) {
                     console.log("Adding scattered clouds video effects");
 
                     forecastItem.addEventListener("mouseenter", () => {
-                        // Reset all video states
                         console.log("Mouse enter - scattered clouds item");
                         clearSkyVideo.classList.remove("video-visible");
                         scatteredCloudsVideo.classList.remove("video-visible");
+                        overcastVideo.classList.remove("video-visible");
+
                         clearSkyVideo.pause();
                         scatteredCloudsVideo.pause();
+                        overcastVideo.pause();
 
                         // Activate scattered clouds video
                         scatteredCloudsVideo.classList.add("video-visible");
                         scatteredCloudsVideo.play().catch(e => console.error("Error playing scattered clouds video:", e));
                     });
 
-                    forecastItem.addEventListener("mouseleave", () => {
-                        console.log("Mouse leave - scattered clouds item");
+                } else if (forecast.description.toLowerCase().includes("overcast")) {
+                    console.log("Adding overcast video effects");
+
+                    forecastItem.addEventListener("mouseenter", () => {
+                        console.log("Mouse enter - overcast item");
+                        clearSkyVideo.classList.remove("video-visible");
                         scatteredCloudsVideo.classList.remove("video-visible");
+                        overcastVideo.classList.remove("video-visible");
+
+                        clearSkyVideo.pause();
                         scatteredCloudsVideo.pause();
+                        overcastVideo.pause();
+
+                        // Activate scattered clouds video
+                        overcastVideo.classList.add("video-visible");
+                        overcastVideo.play().catch(e => console.error("Error playing overcast video:", e));
                     });
-                }
-            }
+            } else if (forecast.description.toLowerCase().includes("rain")) {
+                console.log("Adding rainy video effects");
+
+                forecastItem.addEventListener("mouseenter", () => {
+                    console.log("Mouse enter - overcast item");
+                    clearSkyVideo.classList.remove("video-visible");
+                    scatteredCloudsVideo.classList.remove("video-visible");
+                    overcastVideo.classList.remove("video-visible");
+                    rainVideo.classList.remove("video-visible");
+
+
+                    clearSkyVideo.pause();
+                    scatteredCloudsVideo.pause();
+                    overcastVideo.pause();
+
+                    // Activate scattered clouds video
+                    rainVideo.classList.add("video-visible");
+                    rainVideo.play().catch(e => console.error("Error playing rain video:", e));
+                });
+        }
+        }
 
             // Add forecast item to grid
             forecastGrid.appendChild(forecastItem);

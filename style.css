@@ -7,10 +7,6 @@ body {
     transition: background 0.5s ease-in-out;
 }
 
-h1 {
-    text-align: center; /* Redundant since * sets text-align center */
-}
-
 .textContainer {
     display: flex;
     flex-direction: column;
@@ -191,6 +187,12 @@ button#search:hover {
     transition: opacity 0.5s ease-in-out;
 }
 
+.scattered-clouds-active {
+    background: transparent !important;
+}
+.overcast-active {
+    background: transparent !important;
+}
 .clear-sky-active {
     background: transparent !important;
 }
