@@ -1,4 +1,11 @@
+console.log('Script loaded');
+
+import { handleVideoHover } from "./assets/videos/videos"; 
+    
 let weatherData = []; // Store the weather data globally
+
+window.fetchForecast = fetchForecast;
+window.toggleSettings = toggleSettings;
 
 function toggleSettings() {
     const settingsContainer = document.getElementById("settingsContainer");
@@ -149,133 +156,50 @@ function displayForecast(data) {
     }
 
     try {
-        // Create grid container for forecast items
         const forecastGrid = document.createElement("div");
         forecastGrid.className = "forecast-grid";
 
-        // Iterate through each forecast data point
         data.forEach((forecast) => {
-            // Validate forecast data has required fields
             if (!forecast.date || typeof forecast.temperature === "undefined" || !forecast.description) {
                 console.warn("Invalid forecast item:", forecast);
                 return;
             }
 
-            // Create container for individual forecast
             const forecastItem = document.createElement("div");
             forecastItem.className = "forecast-item";
 
-            // Handle temperature unit conversion
             let temperature = forecast.temperature;
             if (unit === "imperial") {
-                console.log(`Converting ${temperature}°C to Fahrenheit`);
                 temperature = toFahrenheit(temperature);
             }
 
             const unitSymbol = unit === "metric" ? "°C" : "°F";
 
-            // Populate forecast item HTML
             forecastItem.innerHTML = `
                 <p class="date">${forecast.date}</p>
                 <p>${temperature}${unitSymbol}</p>
                 <p>${forecast.description}</p>
             `;
 
-            // Handle video background effects based on weather description
-            const clearSkyVideo = document.getElementById("clearSkyVideo");
-            const scatteredCloudsVideo = document.getElementById("scatteredCloudsVideo");
-            const overcastVideo = document.getElementById("overcastVideo");
-            const rainVideo = document.getElementById("rainVideo");
+            const videoMap = {
+                'clear sky': document.getElementById('clearSkyVideo'),
+                'mainly clear': document.getElementById('clearSkyVideo'),
+                'partly cloudy': document.getElementById('scatteredCloudsVideo'),
+                'overcast': document.getElementById('overcastVideo'),
+                'slight rain': document.getElementById('rainVideo'),
+                'moderate rain': document.getElementById('rainVideo'),
+                'heavy rain': document.getElementById('rainVideo'),
+                // Add other mappings as needed
+            };
 
-            if (!clearSkyVideo || !scatteredCloudsVideo || !overcastVideo) {
-                console.error("Video elements not found");
-            } else {
-                if (forecast.description.toLowerCase().includes("clear sky")) {
-                    console.log("Adding clear sky video effects");
+            forecastItem.setAttribute('data-description', forecast.description);
+            handleVideoHover([forecastItem], videoMap);
 
-                    forecastItem.addEventListener("mouseenter", () => {
-                        // Reset all video states
-                        console.log("Mouse enter - clear sky item");
-                        clearSkyVideo.classList.remove("video-visible");
-                        scatteredCloudsVideo.classList.remove("video-visible");
-                        overcastVideo.classList.remove("video-visible");
-
-                        clearSkyVideo.pause();
-                        scatteredCloudsVideo.pause();
-                        overcastVideo.pause();
-
-                        // Activate clear sky video
-                        document.body.classList.add("clear-sky-active");
-                        clearSkyVideo.classList.add("video-visible");
-
-                        clearSkyVideo.play().catch(e => console.error("Error playing clear sky video:", e));
-                    });
-
-                } else if (forecast.description.toLowerCase().includes("scattered clouds")) {
-                    console.log("Adding scattered clouds video effects");
-
-                    forecastItem.addEventListener("mouseenter", () => {
-                        console.log("Mouse enter - scattered clouds item");
-                        clearSkyVideo.classList.remove("video-visible");
-                        scatteredCloudsVideo.classList.remove("video-visible");
-                        overcastVideo.classList.remove("video-visible");
-
-                        clearSkyVideo.pause();
-                        scatteredCloudsVideo.pause();
-                        overcastVideo.pause();
-
-                        // Activate scattered clouds video
-                        scatteredCloudsVideo.classList.add("video-visible");
-                        scatteredCloudsVideo.play().catch(e => console.error("Error playing scattered clouds video:", e));
-                    });
-
-                } else if (forecast.description.toLowerCase().includes("overcast")) {
-                    console.log("Adding overcast video effects");
-
-                    forecastItem.addEventListener("mouseenter", () => {
-                        console.log("Mouse enter - overcast item");
-                        clearSkyVideo.classList.remove("video-visible");
-                        scatteredCloudsVideo.classList.remove("video-visible");
-                        overcastVideo.classList.remove("video-visible");
-
-                        clearSkyVideo.pause();
-                        scatteredCloudsVideo.pause();
-                        overcastVideo.pause();
-
-                        // Activate scattered clouds video
-                        overcastVideo.classList.add("video-visible");
-                        overcastVideo.play().catch(e => console.error("Error playing overcast video:", e));
-                    });
-            } else if (forecast.description.toLowerCase().includes("rain")) {
-                console.log("Adding rainy video effects");
-
-                forecastItem.addEventListener("mouseenter", () => {
-                    console.log("Mouse enter - overcast item");
-                    clearSkyVideo.classList.remove("video-visible");
-                    scatteredCloudsVideo.classList.remove("video-visible");
-                    overcastVideo.classList.remove("video-visible");
-                    rainVideo.classList.remove("video-visible");
-
-
-                    clearSkyVideo.pause();
-                    scatteredCloudsVideo.pause();
-                    overcastVideo.pause();
-
-                    // Activate scattered clouds video
-                    rainVideo.classList.add("video-visible");
-                    rainVideo.play().catch(e => console.error("Error playing rain video:", e));
-                });
-        }
-        }
-
-            // Add forecast item to grid
             forecastGrid.appendChild(forecastItem);
         });
 
-        // Add completed forecast grid to container
         forecastContainer.appendChild(forecastGrid);
     } catch (error) {
-        // Log and display any errors that occur during forecast display
         console.error("Error displaying forecast:", error);
         errorElement.textContent = "Error displaying forecast data";
     }
@@ -315,8 +239,9 @@ if (unitSelect) {
 document.addEventListener("DOMContentLoaded", function () {
     const unitSelect = document.getElementById("unit");
     const cityInput = document.getElementById("city");
+    const searchButton = document.getElementById("search");
 
-    if (!unitSelect || !cityInput) {
+    if (!unitSelect || !cityInput || !searchButton) {
         console.error("Required elements not found on page load");
         return;
     }
@@ -332,5 +257,10 @@ document.addEventListener("DOMContentLoaded", function () {
             event.preventDefault();
             fetchForecast(this.value);
         }
+    });
+
+    // Add click handler for search button
+    searchButton.addEventListener("click", function() {
+        fetchForecast(cityInput.value);
     });
 });
