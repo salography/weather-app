@@ -30,20 +30,25 @@
   <div class="textContainer">
     <h1 class="text-4xl font-bold text-center">Weather App</h1>
     <input type="text" id="city" placeholder="Enter city name" />
-    <button id="search">Search</button>
+    <button
+      class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200"
+      onclick="fetchForecast(document.getElementById('city').value)"
+    >
+      Search
+    </button>
     <div id="weather"></div>
     <div id="error"></div>
     <div id="loading" style="display: none">Loading...</div>
   </div>
 
-  <button id="settingsButton" onclick="toggleSettings()">
+  <button onclick="toggleSettings()">
     <img src="https://www.iconpacks.net/icons/2/free-settings-icon-3110-thumb.png" width="20" height="20" />
   </button>
   <div id="settingsContainer" class="hidden">
     <div id="settings">
       <h2>Settings</h2>
       <label for="unit">Unit</label>
-      <select id="unit">
+      <select id="unit" onchange="changeUnit(this.value)">
         <option value="metric">Celsius</option>
         <option value="imperial">Fahrenheit</option>
       </select>
@@ -53,7 +58,25 @@
   <div id="forecast"></div>
   <div id="history"></div>
 
-  <script type="module" src="script.js"></script>
+  <script>
+    // Simple function to handle unit changes
+    function changeUnit(value) {
+        localStorage.setItem("weatherUnit", value);
+        if (window.weatherData && window.weatherData.length > 0) {
+            displayForecast(window.weatherData);
+        }
+    }
+
+    // Load saved unit on page load
+    window.onload = function() {
+        const savedUnit = localStorage.getItem("weatherUnit");
+        if (savedUnit) {
+            document.getElementById("unit").value = savedUnit;
+        }
+    }
+  </script>
+  <script src="videos.js"></script>
+  <script src="script.js"></script>
 </body>
 
 </html>

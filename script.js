@@ -1,11 +1,11 @@
-console.log('Script loaded');
+console.log('Script loading...');
 
-import { handleVideoHover } from "./assets/videos/videos"; 
-    
 let weatherData = []; // Store the weather data globally
 
+// Make functions globally available
 window.fetchForecast = fetchForecast;
 window.toggleSettings = toggleSettings;
+window.displayForecast = displayForecast;
 
 function toggleSettings() {
     const settingsContainer = document.getElementById("settingsContainer");
@@ -17,6 +17,8 @@ function toggleSettings() {
 }
 
 async function fetchForecast(city) {
+    console.log('fetchForecast called with city:', city); // Debug log
+
     if (!city || city.trim() === "") {
         const errorElement = document.getElementById("error");
         if (!errorElement) {
@@ -41,11 +43,13 @@ async function fetchForecast(city) {
 
         // First, geocode the city name using Open-Meteo's geocoding API
         const geocodeUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`;
+        console.log('Geocoding URL:', geocodeUrl); // Debug log
         const geocodeResponse = await fetch(geocodeUrl);
         if (!geocodeResponse.ok) {
             throw new Error("Failed to fetch geocoding data");
         }
         const geocodeData = await geocodeResponse.json();
+        console.log('Geocode data:', geocodeData); // Debug log
 
         if (!geocodeData.results || geocodeData.results.length === 0) {
             throw new Error("City not found");
@@ -55,6 +59,7 @@ async function fetchForecast(city) {
 
         // Updated API URL with current temperature and hourly data
         const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weathercode&hourly=temperature_2m,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`;
+        console.log('Weather URL:', weatherUrl); // Debug log
         const weatherResponse = await fetch(weatherUrl);
         
         if (!weatherResponse.ok) {
@@ -62,6 +67,7 @@ async function fetchForecast(city) {
         }
 
         const weatherData = await weatherResponse.json();
+        console.log('Weather data:', weatherData); // Debug log
 
         // Transform the data using current and hourly data for more accuracy
         const transformedData = weatherData.daily.time.map((date, index) => {
@@ -80,6 +86,8 @@ async function fetchForecast(city) {
                 description: getWeatherDescription(today ? weatherData.current.weathercode : weatherData.daily.weathercode[index])
             };
         });
+
+        console.log('Transformed data:', transformedData); // Debug log
 
         // Store the transformed data globally
         window.weatherData = transformedData;
@@ -135,6 +143,7 @@ function getWeatherDescription(code) {
 }
 
 function displayForecast(data) {
+    console.log('displayForecast called with data:', data); // Debug log
     const forecastContainer = document.getElementById("forecast");
     const errorElement = document.getElementById("error");
     const unitSelect = document.getElementById("unit");
@@ -235,32 +244,52 @@ if (unitSelect) {
     });
 }
 
-// Load saved settings on page load
+// Load saved settings and set up event listeners when DOM is ready
 document.addEventListener("DOMContentLoaded", function () {
-    const unitSelect = document.getElementById("unit");
-    const cityInput = document.getElementById("city");
+    console.log('DOM Content Loaded - Setting up event listeners');
+    
     const searchButton = document.getElementById("search");
+    const cityInput = document.getElementById("city");
 
-    if (!unitSelect || !cityInput || !searchButton) {
+    console.log('Search button:', searchButton);
+    console.log('City input:', cityInput);
+
+    if (!searchButton || !cityInput) {
         console.error("Required elements not found on page load");
         return;
     }
 
+    // Add click event listener to search button
+    searchButton.addEventListener("click", () => {
+        console.log('Search button clicked');
+        const cityValue = cityInput.value;
+        console.log('City value:', cityValue);
+        fetchForecast(cityValue);
+    });
+
+    // Add event listener for Enter key on city input
+    cityInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+            console.log('Enter key pressed');
+            event.preventDefault();
+            const cityValue = cityInput.value;
+            console.log('City value:', cityValue);
+            fetchForecast(cityValue);
+        }
+    });
+
+    const unitSelect = document.getElementById("unit");
+
+    if (!unitSelect) {
+        console.error("Required elements not found on page load");
+        return;
+    }
+
+    console.log('Found all required elements'); // Debug log
+
+    // Load saved unit preference
     const savedUnit = localStorage.getItem("weatherUnit");
     if (savedUnit) {
         unitSelect.value = savedUnit;
     }
-
-    // Add event listener for Enter key
-    cityInput.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            fetchForecast(this.value);
-        }
-    });
-
-    // Add click handler for search button
-    searchButton.addEventListener("click", function() {
-        fetchForecast(cityInput.value);
-    });
 });

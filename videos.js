@@ -12,7 +12,7 @@ function resetAndPlayVideo(videoToActivate, allVideos) {
 }
 
 // Function to apply hover logic for forecast items
-export function handleVideoHover(forecastItems, videoMap) {
+window.handleVideoHover = function(forecastItems, videoMap) {
     forecastItems.forEach((forecastItem) => {
         forecastItem.addEventListener("mouseenter", () => {
             const description = forecastItem.getAttribute("data-description").toLowerCase();
@@ -30,5 +30,18 @@ export function handleVideoHover(forecastItems, videoMap) {
         forecastContainer.addEventListener("mouseleave", () => {
             resetAndPlayVideo(null, Object.values(videoMap)); // No active video
         });
+    }
+}
+
+// Make resetAndPlayVideo globally available too
+window.resetAndPlayVideo = function(videoToActivate, allVideos) {
+    allVideos.forEach((video) => {
+        video.classList.remove("video-visible");
+        video.pause();
+    });
+
+    if (videoToActivate) {
+        videoToActivate.classList.add("video-visible");
+        videoToActivate.play().catch((e) => console.error("Error playing video:", e));
     }
 }
